@@ -1,0 +1,30 @@
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+#    --logging.level.org.springframework.web.client.RestTemplate=TRACE
+#    --alt-project="$(System.TeamProject)" \
+#    --alt-fields="Area Path:$(System.TeamProject)" \
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger:
+  - master
+pr:
+  - master
+  
+pool:
+  name: Default
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- task: DockerInstaller@0
+  inputs:
+    dockerVersion: '17.09.0-ce'
+- script: |
+    docker run -v $(Build.Repository.LocalPath):/code checkmarx/cx-flow:1.6.20
+
+  displayName: 'Run Checkmarx CxFlow Scan'

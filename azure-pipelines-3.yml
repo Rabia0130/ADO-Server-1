@@ -1,0 +1,62 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+#    --logging.level.org.springframework.web.client.RestTemplate=TRACE
+#    --alt-project="$(System.TeamProject)" \
+#    --alt-fields="Area Path:$(System.TeamProject)" \
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+trigger:
+  - master
+pr:
+  - master
+  
+pool: Pool1
+#  name: Default
+#  vmImage: 'ubuntu-latest'
+
+steps:
+#- script: |
+#    wget.exe -q https://github.com/checkmarx-ltd/cx-flow/releases/download/$(CX_FLOW_VERSION)/cx-flow-$(CX_FLOW_VERSION).jar
+#  displayName: 'Setup Environment'
+- script: |
+    java -jar cx-flow-$(CX_FLOW_VERSION).jar \
+    --project \
+    --f=$(Build.Repository.LocalPath) \
+    --cx-project="Demo3_Branch" \
+    --namespace=$(basename $(System.CollectionUri)) \
+    --app="$(Build.Repository.Name)" \
+    --alt-project="$(System.TeamProject)" \
+    --alt-fields="Area Path:$(System.TeamProject)" \
+    --repo-name="$(Build.Repository.Name)" \
+    --branch=$(basename $(Build.SourceBranch)) \
+    --cx-flow.bug-tracker=$(CX_FLOW_BUG_TRACKER) \
+    --cx-flow.bug-tracker-impl=$(CX_FLOW_BUG_TRACKER) \
+    --cx-flow.filter-severity="$(CX_FILTER_SEVERITIES)" \
+    --cx-flow.filter-state="$(CX_FILTER_STATE)" \
+    --cx-flow.enabled-vulnerability-scanners="sast" \
+    --checkmarx.base-url=$(CX_SERVER) \
+    --checkmarx.version=$(CX_VERSION) \
+    --checkmarx.client-id=$(CX_CLIENT_ID) \
+    --checkmarx.client-secret=$(CX_CLIENT_SECRET) \
+    --checkmarx.scope="$(CX_SCOPE)" \
+    --checkmarx.configuration="$(CX_CONFIGURATION)" \
+    --checkmarx.preset="$(CX_PRESET)" \
+    --checkmarx.team="$(CX_TEAM)" \
+    --checkmarx.username=$(CX_USERNAME) \
+    --checkmarx.password=$(CX_PASSWORD) \
+    --checkmarx.exclude-folders="$(CX_EXCLUDE_FOLDERS)" \
+    --checkmarx.exclude-files="$(CX_EXCLUDE_FILES)" \
+    --checkmarx.multi-tenant=$(CX_IS_MULTI_TENANT) \
+    --azure.token=$(System.AccessToken) \
+    --azure.url=$(CX_AZURE_URL) \
+    --azure.issue-type="$(CX_AZURE_ISSUE_TYPE)" \
+    --azure.api-version=$(CX_AZURE_API_VERSION) \
+    --azure.false-positive-label="$(CX_AZURE_FALSE_POSITIVE_LABEL)" \
+    --azure.block-merge=$(CX_AZURE_BLOCK_MERGE) \
+    --azure.closed-status="$(CX_AZURE_CLOSED_STATUS)" \
+    --azure.open-status="$(CX_AZURE_OPEN_STATUS)"
+  displayName: 'CxFlow SAST + CxFlow Ticketing'    

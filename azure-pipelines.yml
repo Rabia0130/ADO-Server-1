@@ -1,0 +1,25 @@
+trigger:
+- master
+
+pool: 
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: Application security testing@2021
+  inputs:
+    projectName: 'ADO Server 1'
+    enableProxy: false
+    enableSastScan: true
+    enablePolicyViolations: false
+    CheckmarxService: 'CxSASTPrivateCloud'
+    fullTeamName: 'CxServer/SP/EMEA/checkmarx.com - 41'
+    incScan: false
+    enableDependencyScan: false
+# comment
+#
+#
